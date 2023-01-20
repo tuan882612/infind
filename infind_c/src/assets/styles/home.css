@@ -1,0 +1,13 @@
+.image1 {
+  position: absolute;
+  width: 600px;
+  margin-top: 19vh;
+  left: 55%;
+}
+
+.midBody {
+  position: absolute;
+  text-align: center;
+  margin-top: 30vh;
+  margin-left: 14%;
+}
