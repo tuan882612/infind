@@ -1,7 +1,19 @@
-from fastapi import FastAPI as server
+from fastapi import FastAPI
+import uvicorn
 
-app = server()
+app = FastAPI()
 
 @app.get('/')
-def start() -> dict:
-    return {'service':'web scrape 1'}
+async def start() -> dict:
+    return {
+        'information':'indeed web scrape service',
+        "version": "0.0.1"
+    }
+
+if __name__ == '__main__':
+    uvicorn.run(
+        'main:app', 
+        host='0.0.0.0', 
+        port=1001, 
+        reload=True
+    )

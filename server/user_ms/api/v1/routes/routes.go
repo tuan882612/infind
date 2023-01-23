@@ -8,9 +8,11 @@ import (
 func Init_Service() *gin.Engine {
 	router := gin.Default()
 
-	api := router.Group("/api/v1/") 
+	router.NoRoute(controllers.None())
+
+	api := router.Group("/api/v1") 
 	{
-		api.GET("", controllers.Base())
+		api.GET("/", controllers.Base())
 	}
 
 	return router

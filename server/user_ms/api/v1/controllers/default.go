@@ -9,7 +9,7 @@ import (
 func Base() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		data := map[string]string{
-			"information":"user management api of infind",
+			"information":"infind user service",
 			"version":"0.0.1",
 		}
 

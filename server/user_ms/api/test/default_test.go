@@ -21,7 +21,7 @@ func Test_default_endpoint(t *testing.T) {
 	routes.Init_Service().ServeHTTP(res, req)
 
 	data := map[string]string{
-		"information":"user management api of infind",
+		"information":"infind user service",
 		"version":"0.0.1",
 	}
 

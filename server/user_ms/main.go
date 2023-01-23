@@ -11,6 +11,7 @@ func main() {
 	// gin.SetMode(gin.ReleaseMode) // Setting to turnoff debug mode
 
 	config.Connect_Mongo()
+	config.Connect_Dyanmo()
 	
 	router := routes.Init_Service()
 	
