@@ -9,6 +9,7 @@ import Home from "./pages/home";
 import NotFound from "./pages/notFound";
 import Login from "./pages/login";
 import Register from "./pages/register";
+import { Dashboard } from "@mui/icons-material";
 
 const Routing = () => (
   <Router>
@@ -27,6 +28,10 @@ const Routing = () => (
       <Route 
         path="/register" 
         element={<Register/>}
+      />
+      <Route 
+        path="/dashboard"
+        element={<Dashboard/>}
       />
       <Route 
         path="*" 

@@ -17,6 +17,7 @@ import {
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
 import { margin } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [values, setValues] = useState<user>({
@@ -25,6 +26,8 @@ const Login = () => {
   })
 
   const [psw, setPsw] = useState<boolean>(false)
+
+  const navigate = useNavigate()
 
   const handleChange = (props: string) => 
     (event: ChangeEvent<HTMLInputElement>): void => {
@@ -37,7 +40,9 @@ const Login = () => {
   const { handleSubmit } = useForm()
 
   const handleForm = (): void => {
-    console.log(values)
+    if (values.email === 'root' && values.password === '12345') {
+      navigate('/dashboard')
+    }
   }
 
   return (
