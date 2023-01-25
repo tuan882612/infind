@@ -26,6 +26,12 @@ func Base() gin.HandlerFunc {
 
 func None() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ctx.AbortWithStatus(http.StatusNotFound)
+		body := model.DefaultResponse{
+			Code: http.StatusNotFound,
+			Message: "That endpoint does not exist",
+			Body: map[string]string{},
+		}
+
+		ctx.JSON(http.StatusNotFound, body)
 	}
 }

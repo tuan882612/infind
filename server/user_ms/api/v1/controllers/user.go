@@ -17,7 +17,7 @@ func GetUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		username := ctx.Query("username")
 		
-		db := config.Connect_Dynamodb()
+		db := config.ConnectDynamodb()
 		data, _ := db.GetItem(&dynamodb.GetItemInput{
 			TableName: &TableName,
 			Key: map[string]*dynamodb.AttributeValue{

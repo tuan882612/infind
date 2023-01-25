@@ -5,25 +5,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var ApiVersion string = "/api/v1/"
+var BaseUrl string = "/api/v1"
 
 func Init_Service() *gin.Engine {
 	router := gin.Default()
 
 	router.NoRoute(controllers.None())
+	router.GET(BaseUrl, controllers.Base())
 
-	user := router.Group(ApiVersion + "user") 
+	user := router.Group(BaseUrl + "/user") 
 	{
-		user.GET("", controllers.Base())
 		user.GET("/find", controllers.GetUser())
 		user.POST("/insert", controllers.CreateUser())
 		user.PATCH("/update", controllers.UpdateUser())
 		user.DELETE("/delete", controllers.DeleteUser())
+
+		user.GET("/login",)
 	}
 
-	log := router.Group(ApiVersion + "log")
+	log := router.Group(BaseUrl + "/log")
 	{
-		log.GET("", controllers.Base())
+		log.GET("", )
 	}
 
 	return router

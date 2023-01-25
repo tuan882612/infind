@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
-import { margin } from "@mui/system";
+// import { margin } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -41,6 +41,7 @@ const Login = () => {
 
   const handleForm = (): void => {
     if (values.email === 'root' && values.password === '12345') {
+      window.sessionStorage.setItem('login','true')
       navigate('/dashboard')
     }
   }

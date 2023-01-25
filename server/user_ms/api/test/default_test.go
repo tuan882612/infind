@@ -2,6 +2,7 @@ package test
 
 import (
 	"bytes"
+	"userms/api/v1/model"
 	"userms/api/v1/routes"
 
 	"encoding/json"
@@ -11,13 +12,14 @@ import (
 )
 
 func Test_default_endpoint(t *testing.T) {
-	req, err := http.NewRequest("GET", "/api/v1/", nil)
+	req, err := http.NewRequest("GET", "/api/v1", nil)
 
 	if err != nil {
 		t.Error("No handler for endpoint: \"/api/v1/\"")
 	}
 
 	res := httptest.NewRecorder()
+
 	routes.Init_Service().ServeHTTP(res, req)
 
 	data := map[string]string{
@@ -25,7 +27,13 @@ func Test_default_endpoint(t *testing.T) {
 		"version":"0.0.1",
 	}
 
-	out,_ := json.Marshal(data)
+	out,_ := json.Marshal(
+		model.DefaultResponse{
+			Code: http.StatusOK,
+			Message: "",
+			Body: data,
+		},
+	)
 
 	if !bytes.Equal(out, res.Body.Bytes()) {
 		t.Errorf(
