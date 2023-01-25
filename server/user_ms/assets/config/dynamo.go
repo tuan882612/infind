@@ -1,14 +1,14 @@
 package config
 
 import (
-	"log"
-
-	// "github.com/aws/aws-sdk-go/aws/session"
-	"github.com/joho/godotenv"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
-func Connect_Dyanmo() {
-    if err := godotenv.Load(".env"); err != nil {
-        log.Fatal("Error loading .env file")
-    }
+func Connect_Dynamodb() *dynamodb.DynamoDB {
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+
+	return dynamodb.New(sess)
 }

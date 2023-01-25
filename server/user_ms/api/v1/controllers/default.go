@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"userms/api/v1/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,13 @@ func Base() gin.HandlerFunc {
 			"version":"0.0.1",
 		}
 
-		ctx.JSON(http.StatusOK, data)
+		body := model.DefaultResponse{
+			Code: http.StatusOK,
+			Message: "",
+			Body: data,
+		}
+
+		ctx.JSON(http.StatusOK, body)
 	}
 }
 

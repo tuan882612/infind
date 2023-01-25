@@ -1,7 +1,13 @@
 package model
 
-type Response struct {
-	Code    int 			  `json:"code"`
-	Message string 			  `json:"message"`
+type UserResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Body    User   `json:"body"`
+}
+
+type DefaultResponse struct {
+	Code    int               `json:"code"`
+	Message string 		      `json:"message"`
 	Body    map[string]string `json:"body"`
 }
