@@ -11,8 +11,10 @@ import (
 	"testing"
 )
 
+var BaseUrl string = "/api/v1"
+
 func Test_default_endpoint(t *testing.T) {
-	req, err := http.NewRequest("GET", "/api/v1", nil)
+	req, err := http.NewRequest("GET", BaseUrl, nil)
 
 	if err != nil {
 		t.Error("No handler for endpoint: \"/api/v1/\"")

@@ -11,3 +11,7 @@ type DefaultResponse struct {
 	Message string 		      `json:"message"`
 	Body    map[string]string `json:"body"`
 }
+
+type LoginResponse struct {
+	Found    bool   `json:"found"`
+}
