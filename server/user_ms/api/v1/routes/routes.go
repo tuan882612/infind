@@ -20,7 +20,7 @@ func Init_Service() *gin.Engine {
 		user.PATCH("/update", controllers.UpdateUser())
 		user.DELETE("/delete", controllers.DeleteUser())
 
-		user.GET("/login",)
+		user.GET("/login", controllers.Login())
 	}
 
 	log := router.Group(BaseUrl + "/log")

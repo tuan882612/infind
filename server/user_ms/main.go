@@ -2,7 +2,7 @@ package main
 
 import (
 	"userms/api/v1/routes"
-	"userms/api/v1/validators"
+	"userms/api/validators"
 	"userms/assets/config"
 	// "github.com/gin-gonic/gin"
 )

@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"net/http"
+	"userms/api/v1/model"
 	"userms/assets/config"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,12 +23,14 @@ func Login() gin.HandlerFunc {
 				"username": {
 					S: aws.String(username),
 				},
-				"password": {
-					S: aws.String(password),
-				},
 			},
 		})
 
-		
+		user := model.User{}
+		user.Username = username
+		user.Password = password
+		dynamodbattribute.UnmarshalMap(data.Item, &user)
+
+		ctx.JSON(http.StatusOK, user)
 	}
 }
