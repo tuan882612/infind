@@ -14,5 +14,5 @@ func main() {
 
 	router := routes.Init_Service()
 	router.SetTrustedProxies([]string{"192.168.1.2"})
-	router.Run("localhost:1000")
+	router.Run("0.0.0.0:1000")
 }

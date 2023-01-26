@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var TableName string = "user"
+
 func Base() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		data := map[string]string{

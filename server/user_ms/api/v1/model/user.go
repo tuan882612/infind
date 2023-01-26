@@ -5,5 +5,5 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Created  string `json:"created"`
-	History  []log  `json:"history"`
+	History  []Search  `json:"history"`
 }

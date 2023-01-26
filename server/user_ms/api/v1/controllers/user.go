@@ -11,8 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var TableName string = "user"
-
 func GetUser() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		username := ctx.Query("username")
