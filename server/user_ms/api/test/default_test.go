@@ -3,7 +3,7 @@ package test
 import (
 	"bytes"
 	"userms/api/v1/model"
-	"userms/api/v1/routes"
+	"userms/api/v1"
 
 	"encoding/json"
 	"net/http"
@@ -22,18 +22,16 @@ func Test_default_endpoint(t *testing.T) {
 
 	res := httptest.NewRecorder()
 
-	routes.Init_Service().ServeHTTP(res, req)
-
-	data := map[string]string{
-		"information":"infind user service",
-		"version":"0.0.1",
-	}
+	v1.InitService().ServeHTTP(res, req)
 
 	out,_ := json.Marshal(
 		model.DefaultResponse{
 			Code: http.StatusOK,
 			Message: "",
-			Body: data,
+			Body: map[string]string{
+				"information":"infind user service",
+				"version":"0.0.1",
+			},
 		},
 	)
 

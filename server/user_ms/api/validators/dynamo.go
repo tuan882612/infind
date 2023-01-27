@@ -12,6 +12,6 @@ func ValidateDynamo() {
 	_, err := db.ListTables(&dynamodb.ListTablesInput{})
 
 	if err != nil {
-		log.Fatalln("Could not connect to AWS.")
+		log.Fatalln("Error connecting to AWS.")
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"userms/api/v1/routes"
+	"userms/api/v1"
 )
 
 func Test_GetUser(t *testing.T) {
@@ -16,7 +16,7 @@ func Test_GetUser(t *testing.T) {
 	}
 
 	res := httptest.NewRecorder()
-	
-	routes.Init_Service().ServeHTTP(res, req)
+
+	v1.InitService().ServeHTTP(res, req)
 
 }

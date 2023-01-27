@@ -13,5 +13,5 @@ type DefaultResponse struct {
 }
 
 type LoginResponse struct {
-	Found    bool   `json:"found"`
+	Found bool `json:"found"`
 }

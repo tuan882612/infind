@@ -1,39 +1,44 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
+	"userms/api/v1/database"
 	"userms/api/v1/model"
 	"userms/api/validators"
-	"userms/assets/config"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/gin-gonic/gin"
 )
 
-func Login() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		username := ctx.Query("username")
-		password := ctx.Query("password")
+type LoginController struct {
+	Repo database.UserRepository
+}
 
-		db := config.ConnectDynamodb()
-		data, _ := db.GetItem(&dynamodb.GetItemInput{
-			TableName: &TableName,
-			Key: map[string]*dynamodb.AttributeValue{
-				"username": {
-					S: aws.String(username),
-				},
-			},
-		})
+func (l LoginController) Login(ctx *gin.Context) {
+	username := ctx.Query("username")
+	password := ctx.Query("password")
 
-		body := model.LoginResponse{}
+	data, _ := l.Repo.GetUser(username)
 
-		if validators.ValidateHash(password, data.Item["password"].S) {
-			body.Found = true
-		} else {
-			body.Found = false
-		}
+	body := model.LoginResponse{}
 
-		ctx.JSON(http.StatusOK, body)
+	if validators.ValidateHash(password, data.Item["password"].S) {
+		body.Found = true
+	} else {
+		body.Found = false
 	}
+
+	ctx.JSON(http.StatusOK, body)
+}
+
+func (l LoginController) Register(ctx *gin.Context) {
+	user := model.User{}
+	ctx.BindJSON(&user)
+	data, err := l.Repo.CreateUser(user)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	ctx.JSON(http.StatusOK, data.String())
 }

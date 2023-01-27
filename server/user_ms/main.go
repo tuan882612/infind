@@ -1,7 +1,7 @@
 package main
 
 import (
-	"userms/api/v1/routes"
+	"userms/api/v1"
 	"userms/api/validators"
 	"userms/assets/config"
 	// "github.com/gin-gonic/gin"
@@ -12,7 +12,7 @@ func main() {
 	config.SetEnvVariables()
 	validators.ValidateDynamo()
 
-	router := routes.Init_Service()
+	router := v1.InitService()
 	router.SetTrustedProxies([]string{"192.168.1.2"})
 	router.Run("0.0.0.0:1000")
 }

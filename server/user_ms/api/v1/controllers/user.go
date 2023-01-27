@@ -2,64 +2,42 @@ package controllers
 
 import (
 	"net/http"
+	"userms/api/v1/database"
 	"userms/api/v1/model"
-	"userms/assets/config"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/gin-gonic/gin"
 )
 
-func GetUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		username := ctx.Query("username")
-		
-		db := config.ConnectDynamodb()
-		data, _ := db.GetItem(&dynamodb.GetItemInput{
-			TableName: &TableName,
-			Key: map[string]*dynamodb.AttributeValue{
-				"username": {
-					S: aws.String(username),
-				},
-			},
-		})
+type UserController struct {
+	Repo database.UserRepository
+}
 
-		user := model.User{}
-		dynamodbattribute.UnmarshalMap(data.Item, &user)
+func (u UserController) Find(ctx *gin.Context) {
+	username := ctx.Query("username")
+	data, _ := u.Repo.GetUser(username)
 
-		if user.Username == "" {
-			body := model.DefaultResponse{
-				Code: http.StatusNotFound,
-				Message: "User does not exist in the database",
-				Body: map[string]string{},
-			}
-			ctx.JSON(http.StatusNotFound, body)
-		} else {
-			body := model.UserResponse{
-				Code: http.StatusOK,
-				Message: "",
-				Body: user,
-			}
-			ctx.JSON(http.StatusOK, body)
+	user := model.User{}
+	dynamodbattribute.UnmarshalMap(data.Item, &user)
+
+	if user.Username == "" {
+		body := model.DefaultResponse{
+			Code: http.StatusNotFound,
+			Message: "User does not exist in the database",
+			Body: map[string]string{},
 		}
+		ctx.JSON(http.StatusNotFound, body)
+	} else {
+		body := model.UserResponse{
+			Code: http.StatusOK,
+			Message: "",
+			Body: user,
+		}
+		ctx.JSON(http.StatusOK, body)
 	}
 }
 
-func CreateUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		
-	}
-}
+func (u UserController) Update(ctx *gin.Context) {}
 
-func UpdateUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		
-	}
-}
-
-func DeleteUser() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		
-	}
+func (u UserController) Delete(ctx *gin.Context) {
 }
