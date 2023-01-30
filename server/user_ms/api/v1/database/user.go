@@ -1,7 +1,6 @@
 package database
 
 import (
-	"userms/api/v1/model"
 	"userms/assets/config"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -9,7 +8,7 @@ import (
 
 type UserRepository interface {
 	GetUser(username string) (*dynamodb.GetItemOutput, error)
-	CreateUser(user model.User) (*dynamodb.PutItemOutput, error)
+	CreateUser(user  map[string]*dynamodb.AttributeValue) error
 	// UpdateUser(user io.ReadCloser) (*dynamodb.UpdateItemOutput, error)
 	// DeleteUser(username string) (*dynamodb.DeleteItemOutput, error)
 }

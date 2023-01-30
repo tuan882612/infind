@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"userms/api/response"
 	"userms/api/v1/database"
 	"userms/api/v1/model"
 
@@ -20,19 +21,14 @@ func (u UserController) Find(ctx *gin.Context) {
 	user := model.User{}
 	dynamodbattribute.UnmarshalMap(data.Item, &user)
 
-	if user.Username == "" {
-		body := model.DefaultResponse{
-			Code: http.StatusNotFound,
-			Message: "User does not exist in the database",
-			Body: map[string]string{},
-		}
+	if msg := ""; user.Username == "" {
+		msg := "User does not exist in the database"
+		body := response.None(msg)
+
 		ctx.JSON(http.StatusNotFound, body)
 	} else {
-		body := model.UserResponse{
-			Code: http.StatusOK,
-			Message: "",
-			Body: user,
-		}
+		body := response.FoundUser(msg, user)
+		
 		ctx.JSON(http.StatusOK, body)
 	}
 }

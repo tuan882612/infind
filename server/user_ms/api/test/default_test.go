@@ -2,7 +2,7 @@ package test
 
 import (
 	"bytes"
-	"userms/api/v1/model"
+	"userms/api/response"
 	"userms/api/v1"
 
 	"encoding/json"
@@ -24,16 +24,11 @@ func Test_default_endpoint(t *testing.T) {
 
 	v1.InitService().ServeHTTP(res, req)
 
-	out,_ := json.Marshal(
-		model.DefaultResponse{
-			Code: http.StatusOK,
-			Message: "",
-			Body: map[string]string{
-				"information":"infind user service",
-				"version":"0.0.1",
-			},
-		},
-	)
+	body := map[string]string{
+		"information":"infind user service",
+		"version":"0.2.0",
+	}
+	out,_ := json.Marshal(response.Ok("", body))
 
 	if !bytes.Equal(out, res.Body.Bytes()) {
 		t.Errorf(

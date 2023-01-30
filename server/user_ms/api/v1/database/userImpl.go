@@ -1,11 +1,12 @@
 package database
 
 import (
-	"userms/api/v1/model"
+	// "userms/api/v1/model"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	// "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	// "github.com/aws/aws-sdk-go/service/dynamodb/expression"
 	// "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
@@ -26,13 +27,20 @@ func (r *Repository) GetUser(username string) (*dynamodb.GetItemOutput, error) {
 	})
 }
 
-func (r *Repository) CreateUser(user model.User) (*dynamodb.PutItemOutput, error) {
-	new_user, _ := dynamodbattribute.MarshalMap(user)
-	return r.Client.PutItem(&dynamodb.PutItemInput{
+func (r *Repository) CreateUser(user map[string]*dynamodb.AttributeValue) error {
+	// pkCondition := expression.
+	// 	Name("partion_key").NotEqual(expression.Value(user.Username))
+
+	// exp := expression.AttributeNotExists()
+
+	_, err := r.Client.PutItem(&dynamodb.PutItemInput{
 		TableName: &TableName,
-		ConditionExpression: aws.String("attribute_not_exists(pk)"),
-		Item: new_user,
+		// ConditionExpression: exp,
+		// ExpressionAttributeValues: exp.Values(),
+		// ExpressionAttributeNames: exp.Names(),
+		Item: user,
 	})
+	return err
 }
 
 // func (r *Repository) UpdateUser(user io.ReadCloser) (*dynamodb.UpdateItemOutput, error) {}

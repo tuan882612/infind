@@ -4,9 +4,11 @@ import (
 	"log"
 	"net/http"
 	"userms/api/v1/database"
+	"userms/api/response"
 	"userms/api/v1/model"
 	"userms/api/validators"
 
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,7 +22,7 @@ func (l LoginController) Login(ctx *gin.Context) {
 
 	data, _ := l.Repo.GetUser(username)
 
-	body := model.LoginResponse{}
+	body := response.Login{}
 
 	if validators.ValidateHash(password, data.Item["password"].S) {
 		body.Found = true
@@ -34,11 +36,15 @@ func (l LoginController) Login(ctx *gin.Context) {
 func (l LoginController) Register(ctx *gin.Context) {
 	user := model.User{}
 	ctx.BindJSON(&user)
-	data, err := l.Repo.CreateUser(user)
+	NewUser, _ := dynamodbattribute.MarshalMap(user)
+
+	err := l.Repo.CreateUser(NewUser)
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	ctx.JSON(http.StatusOK, data.String())
+	body := response.Base{}
+
+	ctx.JSON(http.StatusOK, body)
 }
