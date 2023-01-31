@@ -1,13 +1,11 @@
 package database
 
 import (
-	// "userms/api/v1/model"
+	"userms/api/v1/model"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	// "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	// "github.com/aws/aws-sdk-go/service/dynamodb/expression"
-	// "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
 type Repository struct{
@@ -16,33 +14,64 @@ type Repository struct{
 
 var TableName string = "user"
 
-func (r *Repository) GetUser(username string) (*dynamodb.GetItemOutput, error) {
-	return r.Client.GetItem(&dynamodb.GetItemInput{
+func (r *Repository) GetUser(username string) model.User {
+	data, _ := r.Client.GetItem(&dynamodb.GetItemInput{
 		TableName: &TableName,
 		Key: map[string]*dynamodb.AttributeValue{
-			"username": {
-				S: aws.String(username),
-			},
+			"username": { S: &username },
 		},
 	})
+	user := model.User{}
+	dynamodbattribute.UnmarshalMap(data.Item, &user)
+	return user
 }
 
-func (r *Repository) CreateUser(user map[string]*dynamodb.AttributeValue) error {
-	// pkCondition := expression.
-	// 	Name("partion_key").NotEqual(expression.Value(user.Username))
-
-	// exp := expression.AttributeNotExists()
+func (r *Repository) CreateUser(user model.User) (model.User, error) {
+	User, _ := dynamodbattribute.MarshalMap(user)
 
 	_, err := r.Client.PutItem(&dynamodb.PutItemInput{
 		TableName: &TableName,
-		// ConditionExpression: exp,
-		// ExpressionAttributeValues: exp.Values(),
-		// ExpressionAttributeNames: exp.Names(),
-		Item: user,
+		Item: User,
+		ReturnValues: aws.String("ALL_NEW"),
 	})
-	return err
+
+	return user, err
 }
 
-// func (r *Repository) UpdateUser(user io.ReadCloser) (*dynamodb.UpdateItemOutput, error) {}
+func (r *Repository) UpdateUser(user model.User) (model.User, error) {
+	SerializedHistory, _ := dynamodbattribute.MarshalList(user.History)
 
-// func (r *Repository) DeleteUser(username string) (*dynamodb.DeleteItemOutput, error) {}
+	_, err := r.Client.UpdateItem(&dynamodb.UpdateItemInput{
+		TableName: &TableName,
+		Key: map[string]*dynamodb.AttributeValue{
+			"username": { S: &user.Username },
+		},
+		ExpressionAttributeNames: map[string]*string{
+			"#E": aws.String("email"),
+			"#P": aws.String("password"),
+			"#C": aws.String("created"),
+			"#H": aws.String("history"),
+		},
+		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+			":e": { S: &user.Email },
+			":p": { S: &user.Password },
+			":c": { S: &user.Created },
+			":h": { L: SerializedHistory },
+		},
+		UpdateExpression: aws.String("SET #E = :e, #P = :p, #C = :c, #H = :h"),
+		ReturnValues: aws.String("ALL_NEW"),
+	})
+
+	return user, err
+}
+
+func (r *Repository) DeleteUser(username string) error {
+	_, err := r.Client.DeleteItem(&dynamodb.DeleteItemInput{
+		TableName: &TableName,
+		Key: map[string]*dynamodb.AttributeValue{
+			"username": { S: &username },
+		},
+	})
+
+	return err
+}

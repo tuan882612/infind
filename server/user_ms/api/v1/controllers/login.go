@@ -3,12 +3,12 @@ package controllers
 import (
 	"log"
 	"net/http"
-	"userms/api/v1/database"
 	"userms/api/response"
+	"userms/api/utility"
+	"userms/api/v1/database"
 	"userms/api/v1/model"
 	"userms/api/validators"
 
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,31 +20,38 @@ func (l LoginController) Login(ctx *gin.Context) {
 	username := ctx.Query("username")
 	password := ctx.Query("password")
 
-	data, _ := l.Repo.GetUser(username)
+	user := l.Repo.GetUser(username)
 
-	body := response.Login{}
+	res := response.Login{}
 
-	if validators.ValidateHash(password, data.Item["password"].S) {
-		body.Found = true
+	if validators.ValidateHash(password, &user.Password) {
+		res.Found = true
 	} else {
-		body.Found = false
+		res.Found = false
 	}
 
-	ctx.JSON(http.StatusOK, body)
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (l LoginController) Register(ctx *gin.Context) {
 	user := model.User{}
 	ctx.BindJSON(&user)
-	NewUser, _ := dynamodbattribute.MarshalMap(user)
 
-	err := l.Repo.CreateUser(NewUser)
+	check := l.Repo.GetUser(user.Username);
 
-	if err != nil {
-		log.Fatalln(err)
+	if check.Username != "" {
+		res := response.Exist(user)
+
+		ctx.JSON(http.StatusConflict, res)
+	} else {
+		user.Password, _ = utility.HashPassword(user.Password)
+
+		if _, err := l.Repo.CreateUser(user); err != nil {
+			log.Fatalln(err)
+		}
+
+		res := response.Created(user)
+	
+		ctx.JSON(http.StatusOK, res)
 	}
-
-	body := response.Base{}
-
-	ctx.JSON(http.StatusOK, body)
 }
