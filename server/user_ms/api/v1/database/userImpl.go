@@ -32,7 +32,6 @@ func (r *Repository) CreateUser(user model.User) (model.User, error) {
 	_, err := r.Client.PutItem(&dynamodb.PutItemInput{
 		TableName: &TableName,
 		Item: User,
-		ReturnValues: aws.String("ALL_NEW"),
 	})
 
 	return user, err

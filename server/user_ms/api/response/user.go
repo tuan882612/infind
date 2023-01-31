@@ -10,12 +10,12 @@ type User struct {
 	Meta Meta		`json:"meta"`
 }
 
-func FoundUser(message string, user model.User) User {
+func FoundUser(user model.User) User {
 	return User{
 		Body: user,
 		Meta: Meta{
 			Code: http.StatusOK,
-			Message: message,
+			Message: "",
 		},
 	}
 }

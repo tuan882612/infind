@@ -25,7 +25,7 @@ func (u UserController) Find(ctx *gin.Context) {
 
 		ctx.JSON(http.StatusNotFound, res)
 	} else {
-		res := response.FoundUser("", user)
+		res := response.FoundUser(user)
 		
 		ctx.JSON(http.StatusOK, res)
 	}
