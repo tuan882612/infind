@@ -25,14 +25,14 @@ func Test_default_endpoint(t *testing.T) {
 	v1.InitService().ServeHTTP(res, req)
 
 	body := map[string]string{
-		"information":"infind user service",
-		"version":"0.2.0",
+		"information": "infind user service",
+		"version":     "0.2.0",
 	}
-	out,_ := json.Marshal(response.Ok("", body))
+	out, _ := json.Marshal(response.Custom(body, http.StatusOK, ""))
 
 	if !bytes.Equal(out, res.Body.Bytes()) {
 		t.Errorf(
-			"Retrieved invalid body: %v\nStatus code: %v", 
+			"Retrieved invalid body: %v\nStatus code: %v",
 			res.Body, res.Code,
 		)
 	}

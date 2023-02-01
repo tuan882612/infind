@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
-type Repository struct{
+type Repository struct {
 	Client *dynamodb.DynamoDB
 }
 
@@ -18,11 +18,14 @@ func (r *Repository) GetUser(username string) model.User {
 	data, _ := r.Client.GetItem(&dynamodb.GetItemInput{
 		TableName: &TableName,
 		Key: map[string]*dynamodb.AttributeValue{
-			"username": { S: &username },
+			"username": {S: &username},
 		},
 	})
 	user := model.User{}
-	dynamodbattribute.UnmarshalMap(data.Item, &user)
+
+	if err := dynamodbattribute.UnmarshalMap(data.Item, &user); err != nil {
+		return model.User{}
+	}
 	return user
 }
 
@@ -31,7 +34,7 @@ func (r *Repository) CreateUser(user model.User) (model.User, error) {
 
 	_, err := r.Client.PutItem(&dynamodb.PutItemInput{
 		TableName: &TableName,
-		Item: User,
+		Item:      User,
 	})
 
 	return user, err
@@ -43,7 +46,7 @@ func (r *Repository) UpdateUser(user model.User) (model.User, error) {
 	_, err := r.Client.UpdateItem(&dynamodb.UpdateItemInput{
 		TableName: &TableName,
 		Key: map[string]*dynamodb.AttributeValue{
-			"username": { S: &user.Username },
+			"username": {S: &user.Username},
 		},
 		ExpressionAttributeNames: map[string]*string{
 			"#E": aws.String("email"),
@@ -52,13 +55,13 @@ func (r *Repository) UpdateUser(user model.User) (model.User, error) {
 			"#H": aws.String("history"),
 		},
 		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-			":e": { S: &user.Email },
-			":p": { S: &user.Password },
-			":c": { S: &user.Created },
-			":h": { L: SerializedHistory },
+			":e": {S: &user.Email},
+			":p": {S: &user.Password},
+			":c": {S: &user.Created},
+			":h": {L: SerializedHistory},
 		},
 		UpdateExpression: aws.String("SET #E = :e, #P = :p, #C = :c, #H = :h"),
-		ReturnValues: aws.String("ALL_NEW"),
+		ReturnValues:     aws.String("ALL_NEW"),
 	})
 
 	return user, err
@@ -68,7 +71,7 @@ func (r *Repository) DeleteUser(username string) error {
 	_, err := r.Client.DeleteItem(&dynamodb.DeleteItemInput{
 		TableName: &TableName,
 		Key: map[string]*dynamodb.AttributeValue{
-			"username": { S: &username },
+			"username": {S: &username},
 		},
 	})
 

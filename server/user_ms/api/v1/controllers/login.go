@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 	"userms/api/response"
 	"userms/api/utility"
@@ -26,6 +25,15 @@ func (l LoginController) Login(ctx *gin.Context) {
 
 	if validators.ValidateHash(password, &user.Password) {
 		res.Found = true
+		ctx.SetCookie(
+			"user",
+			user.Username,
+			120,
+			"/",
+			"localhost",
+			false,
+			true,
+		)
 	} else {
 		res.Found = false
 	}
@@ -35,23 +43,36 @@ func (l LoginController) Login(ctx *gin.Context) {
 
 func (l LoginController) Register(ctx *gin.Context) {
 	user := model.User{}
-	ctx.BindJSON(&user)
 
-	check := l.Repo.GetUser(user.Username);
+	if err := ctx.BindJSON(&user); err != nil {
+		res := response.Custom(
+			map[string]string{},
+			http.StatusBadRequest,
+			"Invalid body recieved.",
+		)
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	check := l.Repo.GetUser(user.Username)
 
 	if check.Username != "" {
-		res := response.Exist(user)
-
+		res := response.Custom(
+			user,
+			http.StatusConflict,
+			"User already exist.",
+		)
 		ctx.JSON(http.StatusConflict, res)
-	} else {
-		user.Password, _ = utility.HashPassword(user.Password)
-
-		if _, err := l.Repo.CreateUser(user); err != nil {
-			log.Fatalln(err)
-		}
-
-		res := response.Created(user)
-	
-		ctx.JSON(http.StatusOK, res)
+		return
 	}
+	user.Password, _ = utility.HashPassword(user.Password)
+
+	if _, err := l.Repo.CreateUser(user); err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Error(err))
+		return
+	}
+
+	res := response.Custom(user, http.StatusCreated, "")
+
+	ctx.JSON(http.StatusCreated, res)
 }

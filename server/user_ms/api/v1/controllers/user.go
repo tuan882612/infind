@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 	"userms/api/response"
 	"userms/api/utility"
@@ -18,41 +17,56 @@ type UserController struct {
 func (u UserController) Find(ctx *gin.Context) {
 	username := ctx.Query("username")
 	user := u.Repo.GetUser(username)
-	
-	if user.Username == "" {
-		msg := "User does not exist in the database"
-		res := response.None(msg)
 
+	if user.Username == "" {
+		res := response.Custom(
+			map[string]string{},
+			http.StatusNotFound,
+			"User does not exist.",
+		)
 		ctx.JSON(http.StatusNotFound, res)
-	} else {
-		res := response.FoundUser(user)
-		
-		ctx.JSON(http.StatusOK, res)
+		return
 	}
+
+	res := response.Custom(user, http.StatusOK, "")
+
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (u UserController) Update(ctx *gin.Context) {
 	user := model.User{}
-	ctx.BindJSON(&user)
+
+	if err := ctx.BindJSON(&user); err != nil {
+		res := response.Custom(
+			map[string]string{},
+			http.StatusBadRequest,
+			"Invalid body recieved.",
+		)
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
 
 	check := u.Repo.GetUser(user.Username)
-	
+
 	if check.Username == "" {
-		msg := "The user does not exist or you entered the wrong username."
-		res := response.None(msg)
-
+		res := response.Custom(
+			map[string]string{},
+			http.StatusNotFound,
+			"User does not exist.",
+		)
 		ctx.JSON(http.StatusNotFound, res)
-	} else {
-		user.Password, _ = utility.HashPassword(user.Password)
-		
-		if _, err := u.Repo.UpdateUser(user); err != nil {
-			log.Fatalln(err)
-		} else {
-			res := response.Updated(user)
-
-			ctx.JSON(http.StatusAccepted, res)
-		}
+		return
 	}
+	user.Password, _ = utility.HashPassword(user.Password)
+
+	if _, err := u.Repo.UpdateUser(user); err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Error(err))
+		return
+	}
+
+	res := response.Custom(user, http.StatusAccepted, "")
+
+	ctx.JSON(http.StatusAccepted, res)
 }
 
 func (u UserController) Delete(ctx *gin.Context) {
@@ -60,20 +74,24 @@ func (u UserController) Delete(ctx *gin.Context) {
 	user := u.Repo.GetUser(username)
 
 	if user.Username == "" {
-		msg := "User does not exist in the database"
-		res := response.None(msg)
-
+		res := response.Custom(
+			map[string]string{},
+			http.StatusNotFound,
+			"User does not exist.",
+		)
 		ctx.JSON(http.StatusNotFound, res)
-	} else {
-		if err := u.Repo.DeleteUser(username); err != nil {
-			res := response.Error(err)
-
-			ctx.JSON(http.StatusBadRequest, res)
-		} else {
-			msg := username+" has been removed from the database."
-			res := response.Accepted(msg)
-
-			ctx.JSON(http.StatusAccepted, res)
-		}
+		return
 	}
+
+	if err := u.Repo.DeleteUser(username); err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Error(err))
+		return
+	}
+
+	res := response.Custom(
+		map[string]string{},
+		http.StatusAccepted,
+		"User has been removed.",
+	)
+	ctx.JSON(http.StatusAccepted, res)
 }
