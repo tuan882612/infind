@@ -1,39 +1,50 @@
 package test
 
 import (
-	"bytes"
+	"encoding/json"
 	"userms/api/response"
 	"userms/api/v1"
 
-	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var BaseUrl string = "/api/v1"
 
-func Test_default_endpoint(t *testing.T) {
-	req, err := http.NewRequest("GET", BaseUrl, nil)
-
-	if err != nil {
-		t.Error("No handler for endpoint: \"/api/v1/\"")
-	}
+func Test_Default_Endpoint(t *testing.T) {
+	req, _ := http.NewRequest(
+		http.MethodGet, 
+		BaseUrl, 
+		nil,
+	)
 
 	res := httptest.NewRecorder()
-
 	v1.InitService().ServeHTTP(res, req)
 
-	body := map[string]string{
+	body := map[string]interface{}{
 		"information": "infind user service",
 		"version":     "0.2.0",
 	}
-	out, _ := json.Marshal(response.Custom(body, http.StatusOK, ""))
+	expected := response.Custom(body, http.StatusOK, "")
 
-	if !bytes.Equal(out, res.Body.Bytes()) {
-		t.Errorf(
-			"Retrieved invalid body: %v\nStatus code: %v",
-			res.Body, res.Code,
-		)
-	}
+	data := response.Base{}
+	json.Unmarshal(res.Body.Bytes(), &data)
+
+	assert.Equal(t, expected, data)
+}
+
+func Test_NonExistent_Endpoint(t *testing.T) {
+	req, _ := http.NewRequest(
+		http.MethodGet, 
+		BaseUrl+"wrong", 
+		nil,
+	)
+
+	res := httptest.NewRecorder()
+	v1.InitService().ServeHTTP(res, req)
+	
+	assert.Equal(t, http.StatusNotFound, res.Code)
 }

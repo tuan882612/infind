@@ -1,4 +1,4 @@
-package database
+package repository
 
 import (
 	"userms/api/v1/model"
@@ -8,42 +8,37 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
-type Repository struct {
-	Client *dynamodb.DynamoDB
-}
+func GetInput(username string, email string) *dynamodb.GetItemInput {
+	key := map[string]*dynamodb.AttributeValue{}
 
-var TableName string = "user"
-
-func (r *Repository) GetUser(username string) model.User {
-	data, _ := r.Client.GetItem(&dynamodb.GetItemInput{
-		TableName: &TableName,
-		Key: map[string]*dynamodb.AttributeValue{
+	if email != "" {
+		key = map[string]*dynamodb.AttributeValue{
 			"username": {S: &username},
-		},
-	})
-	user := model.User{}
-
-	if err := dynamodbattribute.UnmarshalMap(data.Item, &user); err != nil {
-		return model.User{}
+			"email": {S: &email},
+		}
+	} else {
+		key = map[string]*dynamodb.AttributeValue{
+			"username": {S: &username},
+		}
 	}
-	return user
-}
-
-func (r *Repository) CreateUser(user model.User) (model.User, error) {
-	User, _ := dynamodbattribute.MarshalMap(user)
-
-	_, err := r.Client.PutItem(&dynamodb.PutItemInput{
+	
+	return &dynamodb.GetItemInput {
 		TableName: &TableName,
-		Item:      User,
-	})
-
-	return user, err
+		Key: key,
+	}
 }
 
-func (r *Repository) UpdateUser(user model.User) (model.User, error) {
+func PutInput(user map[string]*dynamodb.AttributeValue) *dynamodb.PutItemInput {
+	return &dynamodb.PutItemInput{
+		TableName: &TableName,
+		Item:      user,
+	}
+}
+
+func UpdateInput(user model.User) *dynamodb.UpdateItemInput {
 	SerializedHistory, _ := dynamodbattribute.MarshalList(user.History)
 
-	_, err := r.Client.UpdateItem(&dynamodb.UpdateItemInput{
+	return &dynamodb.UpdateItemInput{
 		TableName: &TableName,
 		Key: map[string]*dynamodb.AttributeValue{
 			"username": {S: &user.Username},
@@ -62,18 +57,14 @@ func (r *Repository) UpdateUser(user model.User) (model.User, error) {
 		},
 		UpdateExpression: aws.String("SET #E = :e, #P = :p, #C = :c, #H = :h"),
 		ReturnValues:     aws.String("ALL_NEW"),
-	})
-
-	return user, err
+	}
 }
 
-func (r *Repository) DeleteUser(username string) error {
-	_, err := r.Client.DeleteItem(&dynamodb.DeleteItemInput{
+func DeleteInput(username string) *dynamodb.DeleteItemInput {
+	return &dynamodb.DeleteItemInput{
 		TableName: &TableName,
 		Key: map[string]*dynamodb.AttributeValue{
 			"username": {S: &username},
 		},
-	})
-
-	return err
+	}
 }

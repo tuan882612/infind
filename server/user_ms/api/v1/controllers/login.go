@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"userms/api/response"
 	"userms/api/utility"
-	"userms/api/v1/database"
+	"userms/api/v1/repository"
 	"userms/api/v1/model"
 	"userms/api/validators"
 
@@ -12,14 +12,14 @@ import (
 )
 
 type LoginController struct {
-	Repo database.UserRepository
+	Repo repository.UserRepository
 }
 
 func (l LoginController) Login(ctx *gin.Context) {
 	username := ctx.Query("username")
 	password := ctx.Query("password")
 
-	user := l.Repo.GetUser(username)
+	user := l.Repo.GetUser(username, "")
 
 	res := response.Login{}
 
@@ -28,7 +28,7 @@ func (l LoginController) Login(ctx *gin.Context) {
 		ctx.SetCookie(
 			"user",
 			user.Username,
-			120,
+			60,
 			"/",
 			"localhost",
 			false,
@@ -44,7 +44,7 @@ func (l LoginController) Login(ctx *gin.Context) {
 func (l LoginController) Register(ctx *gin.Context) {
 	user := model.User{}
 
-	if err := ctx.BindJSON(&user); err != nil {
+	if err := ctx.ShouldBindJSON(user); err != nil {
 		res := response.Custom(
 			map[string]string{},
 			http.StatusBadRequest,
@@ -54,7 +54,7 @@ func (l LoginController) Register(ctx *gin.Context) {
 		return
 	}
 
-	check := l.Repo.GetUser(user.Username)
+	check := l.Repo.GetUser(user.Username, user.Email)
 
 	if check.Username != "" {
 		res := response.Custom(

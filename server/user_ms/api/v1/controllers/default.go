@@ -8,7 +8,7 @@ import (
 )
 
 func Base(ctx *gin.Context) {
-	body := map[string]string{
+	body := map[string]interface{}{
 		"information": "infind user service",
 		"version":     "0.2.0",
 	}

@@ -4,19 +4,19 @@ import (
 	"net/http"
 	"userms/api/response"
 	"userms/api/utility"
-	"userms/api/v1/database"
+	"userms/api/v1/repository"
 	"userms/api/v1/model"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
-	Repo database.UserRepository
+	Repo repository.UserRepository
 }
 
 func (u UserController) Find(ctx *gin.Context) {
 	username := ctx.Query("username")
-	user := u.Repo.GetUser(username)
+	user := u.Repo.GetUser(username, "")
 
 	if user.Username == "" {
 		res := response.Custom(
@@ -36,7 +36,7 @@ func (u UserController) Find(ctx *gin.Context) {
 func (u UserController) Update(ctx *gin.Context) {
 	user := model.User{}
 
-	if err := ctx.BindJSON(&user); err != nil {
+	if err := ctx.ShouldBindJSON(user); err != nil {
 		res := response.Custom(
 			map[string]string{},
 			http.StatusBadRequest,
@@ -46,7 +46,7 @@ func (u UserController) Update(ctx *gin.Context) {
 		return
 	}
 
-	check := u.Repo.GetUser(user.Username)
+	check := u.Repo.GetUser(user.Username, user.Email)
 
 	if check.Username == "" {
 		res := response.Custom(
@@ -71,7 +71,7 @@ func (u UserController) Update(ctx *gin.Context) {
 
 func (u UserController) Delete(ctx *gin.Context) {
 	username := ctx.Query("username")
-	user := u.Repo.GetUser(username)
+	user := u.Repo.GetUser(username, "")
 
 	if user.Username == "" {
 		res := response.Custom(

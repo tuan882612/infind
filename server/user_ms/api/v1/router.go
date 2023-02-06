@@ -12,6 +12,9 @@ import (
 var BaseUrl string = "/api/v1"
 
 func InitService() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
+	config.SetEnvVariables()
+
 	router := gin.Default()
 	router.Use(cors.New(config.MiddleWare()))
 	
