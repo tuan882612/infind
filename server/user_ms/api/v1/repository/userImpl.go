@@ -2,6 +2,7 @@ package repository
 
 import (
 	"userms/api/v1/model"
+	"userms/api/v1/repository/adapter"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -11,10 +12,10 @@ type Repository struct {
 	Client *dynamodb.DynamoDB
 }
 
-var TableName string = "user"
-
 func (r *Repository) GetUser(username string, email string) model.User {
-	data, _ := r.Client.GetItem(GetInput(username, email))
+	query := adapter.GetInput(username, email, "user")
+	data, _ := r.Client.GetItem(query)
+	
 	user := model.User{}
 
 	if err := dynamodbattribute.UnmarshalMap(data.Item, &user); err != nil {
@@ -25,20 +26,23 @@ func (r *Repository) GetUser(username string, email string) model.User {
 
 func (r *Repository) CreateUser(user model.User) (model.User, error) {
 	User, _ := dynamodbattribute.MarshalMap(user)
-
-	_, err := r.Client.PutItem(PutInput(User))
+	
+	query := adapter.PutInput(User, "user")
+	_, err := r.Client.PutItem(query)
 
 	return user, err
 }
 
 func (r *Repository) UpdateUser(user model.User) (model.User, error) {
-	_, err := r.Client.UpdateItem(UpdateInput(user))
+	query := adapter.UpdateInput(user, "user")
+	_, err := r.Client.UpdateItem(query)
 
 	return user, err
 }
 
 func (r *Repository) DeleteUser(username string) error {
-	_, err := r.Client.DeleteItem(DeleteInput(username))
+	query := adapter.DeleteInput(username, "user")
+	_, err := r.Client.DeleteItem(query)
 
 	return err
 }

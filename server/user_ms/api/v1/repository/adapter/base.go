@@ -1,4 +1,4 @@
-package repository
+package adapter
 
 import (
 	"userms/api/v1/model"
@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 )
 
-func GetInput(username string, email string) *dynamodb.GetItemInput {
+func GetInput(username string, email string, TableName string) *dynamodb.GetItemInput {
 	key := map[string]*dynamodb.AttributeValue{}
 
 	if email != "" {
@@ -28,14 +28,14 @@ func GetInput(username string, email string) *dynamodb.GetItemInput {
 	}
 }
 
-func PutInput(user map[string]*dynamodb.AttributeValue) *dynamodb.PutItemInput {
+func PutInput(user map[string]*dynamodb.AttributeValue, TableName string) *dynamodb.PutItemInput {
 	return &dynamodb.PutItemInput{
 		TableName: &TableName,
 		Item:      user,
 	}
 }
 
-func UpdateInput(user model.User) *dynamodb.UpdateItemInput {
+func UpdateInput(user model.User, TableName string) *dynamodb.UpdateItemInput {
 	SerializedHistory, _ := dynamodbattribute.MarshalList(user.History)
 
 	return &dynamodb.UpdateItemInput{
@@ -60,7 +60,7 @@ func UpdateInput(user model.User) *dynamodb.UpdateItemInput {
 	}
 }
 
-func DeleteInput(username string) *dynamodb.DeleteItemInput {
+func DeleteInput(username string, TableName string) *dynamodb.DeleteItemInput {
 	return &dynamodb.DeleteItemInput{
 		TableName: &TableName,
 		Key: map[string]*dynamodb.AttributeValue{

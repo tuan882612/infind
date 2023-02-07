@@ -21,22 +21,28 @@ func (l LoginController) Login(ctx *gin.Context) {
 
 	user := l.Repo.GetUser(username, "")
 
-	res := response.Login{}
+	log := response.Login{}
 
 	if validators.ValidateHash(password, &user.Password) {
-		res.Found = true
 		ctx.SetCookie(
 			"user",
 			user.Username,
 			60,
 			"/",
-			"localhost",
+			"localhost:3000",
 			false,
 			true,
 		)
+		log.Found = true
 	} else {
-		res.Found = false
+		log.Found = false
 	}
+
+	res := response.Custom(
+		log,
+		http.StatusOK,
+		"",
+	)
 
 	ctx.JSON(http.StatusOK, res)
 }

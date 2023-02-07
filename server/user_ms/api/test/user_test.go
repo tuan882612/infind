@@ -40,7 +40,7 @@ func Test_Get_NonExistent_User(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, res.Code)
 }
 
-func Test_Invalid_User(t *testing.T) {
+func Test_Update_Invalid_User(t *testing.T) {
 	data := map[string]string{
 		"test": "invalid sample",
 	}

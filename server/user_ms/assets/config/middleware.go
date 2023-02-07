@@ -14,5 +14,6 @@ func MiddleWare() cors.Config {
 		"Content-Type", "X-XSRF-TOKEN", 
 		"Accept", "Origin", "X-Requested-With", "Authorization")
 	config.AddAllowMethods("*")
+	
 	return config
 }
