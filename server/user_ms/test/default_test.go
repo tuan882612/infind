@@ -3,7 +3,7 @@ package test
 import (
 	"encoding/json"
 	"userms/api/response"
-	"userms/api/v1"
+	"userms/api/v1/server"
 
 	"net/http"
 	"net/http/httptest"

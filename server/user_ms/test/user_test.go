@@ -3,7 +3,7 @@ package test
 import (
 	"bytes"
 	"encoding/json"
-	"userms/api/v1"
+	"userms/api/v1/server"
 
 	// "userms/api/v1/model"
 

@@ -1,5 +1,5 @@
 build:
-	go build -o ./bin ./cmd/main.go
+	go build -o ./bin ./cmd/api/main.go
 
 testing:
 	go clean -testcache
@@ -9,4 +9,4 @@ run:
 	./bin/main.exe
 
 dev:
-	go run ./cmd/main.go
+	go run ./cmd/api/main.go
