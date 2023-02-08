@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 	"userms/api/response"
-	"userms/api/utility"
+	"userms/utility"
 	"userms/api/v1/repository"
 	"userms/api/v1/model"
 
@@ -57,6 +57,7 @@ func (u UserController) Update(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
+
 	user.Password, _ = utility.HashPassword(user.Password)
 
 	if _, err := u.Repo.UpdateUser(user); err != nil {

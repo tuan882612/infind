@@ -2,8 +2,9 @@ package controllers
 
 import (
 	"net/http"
+	
 	"userms/api/response"
-	"userms/api/utility"
+	"userms/utility"
 	"userms/api/v1/repository"
 	"userms/api/v1/model"
 	"userms/api/validators"
@@ -24,15 +25,6 @@ func (l LoginController) Login(ctx *gin.Context) {
 	log := response.Login{}
 
 	if validators.ValidateHash(password, &user.Password) {
-		ctx.SetCookie(
-			"user",
-			user.Username,
-			60,
-			"/",
-			"localhost:3000",
-			false,
-			true,
-		)
 		log.Found = true
 	} else {
 		log.Found = false
@@ -71,6 +63,7 @@ func (l LoginController) Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusConflict, res)
 		return
 	}
+	
 	user.Password, _ = utility.HashPassword(user.Password)
 
 	if _, err := l.Repo.CreateUser(user); err != nil {

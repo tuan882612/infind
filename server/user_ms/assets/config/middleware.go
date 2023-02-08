@@ -5,8 +5,10 @@ import (
 )
 
 func MiddleWare() cors.Config {
+	origins := []string{"http://localhost:3000"}
+	
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowOrigins = origins
 	config.AllowCredentials = true
 	config.AddAllowHeaders(
 		"Access-Control-Allow-Headers", 

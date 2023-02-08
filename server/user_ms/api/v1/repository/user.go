@@ -14,5 +14,5 @@ type UserRepository interface {
 
 func NewRepo() UserRepository {
 	client := config.ConnectDynamodb()
-	return UserRepository(&Repository{Client: client})
+	return &Repository{Client: client, TableName: "user"}
 }
