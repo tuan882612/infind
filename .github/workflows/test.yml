@@ -23,7 +23,7 @@ jobs:
 
     - name: Build
       working-directory: server/user_ms
-      run: go build -o ./cmd/main.go
+      run: go build -o ./bin ./cmd/main.go
 
     - name: Test
       working-directory: server/user_ms
