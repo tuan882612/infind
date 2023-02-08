@@ -7,7 +7,7 @@ import (
 
 type LoginRepository interface {
 	GetUser(username string, email string) user.User
-	CreateUser(user user.User) (user.User, error)
+	CreateUser(user user.User) error
 }
 
 func NewRepo() LoginRepository {

@@ -3,7 +3,6 @@ package user
 import (
 	"net/http"
 	"userms/api/response"
-	"userms/api/security"
 
 	"github.com/gin-gonic/gin"
 )
@@ -55,8 +54,6 @@ func (u UserController) Update(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
-
-	user.Password, _ = security.HashPassword(user.Password)
 
 	if _, err := u.Repo.UpdateUser(user); err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Error(err))

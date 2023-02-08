@@ -4,7 +4,6 @@ import (
 	"net/http"
 	
 	"userms/api/response"
-	"userms/api/security"
 	"userms/api/v1/domain/user"
 
 	"github.com/gin-gonic/gin"
@@ -18,18 +17,25 @@ func (l LoginController) Login(ctx *gin.Context) {
 	username := ctx.Query("username")
 	password := ctx.Query("password")
 
-	user := l.Repo.GetUser(username, "")
+	user := l.Repo.GetUser(username, password)
 
-	log := response.Login{}
+	if user.Username == "" {
+		res := response.Custom(
+			response.Login{
+				Found: false,
+			},
+			http.StatusNotFound,
+			"Invalid login credentials",
+		)
 
-	if security.ValidateHash(password, &user.Password) {
-		log.Found = true
-	} else {
-		log.Found = false
+		ctx.JSON(http.StatusNotFound, res)
+		return
 	}
 
 	res := response.Custom(
-		log,
+		response.Login{
+			Found: true,
+		},
 		http.StatusOK,
 		"",
 	)
@@ -62,9 +68,7 @@ func (l LoginController) Register(ctx *gin.Context) {
 		return
 	}
 	
-	user.Password, _ = security.HashPassword(user.Password)
-
-	if _, err := l.Repo.CreateUser(user); err != nil {
+	if err := l.Repo.CreateUser(user); err != nil {
 		ctx.JSON(http.StatusBadRequest, response.Error(err))
 		return
 	}
