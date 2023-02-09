@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEventHandler, useState } from "react";
 
 import user from "../types/user";
 import { FormButton } from "../components/formComp";
@@ -12,22 +12,23 @@ import {
   Typography,
   Link,
   Stack,
-  Box
+  Box,
+  Button
 } from "@mui/material";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
-// import { margin } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const Login = () => {
+const Login = () => {  
+  const navigate = useNavigate()
+  const { handleSubmit } = useForm()
+
   const [values, setValues] = useState<user>({
-    email: '',
+    username: '',
     password: ''
   })
-
   const [psw, setPsw] = useState<boolean>(false)
-
-  const navigate = useNavigate()
 
   const handleChange = (props: string) => 
     (event: ChangeEvent<HTMLInputElement>): void => {
@@ -37,13 +38,18 @@ const Login = () => {
 
   const changeVis = (): void => setPsw(!psw)
 
-  const { handleSubmit } = useForm()
-
-  const handleForm = (): void => {
-    if (values.email === 'root' && values.password === '12345') {
-      window.sessionStorage.setItem('login','true')
-      navigate('/dashboard')
-    }
+  const handleForm = async (): Promise<void> => {
+    await axios.get(
+      'http://localhost:1000/api/v1/login'+
+      `?username=+${values.username}+&password=+${values.password}`
+    ).then(res => {   
+      if (res.data) {
+        window.sessionStorage.setItem('login','true')
+        navigate('/dashboard', { replace: true })
+      } else {
+        console.log('invalid')
+      }
+    }).catch(err => console.log(err))
   }
 
   return (
@@ -51,7 +57,7 @@ const Login = () => {
       sx={{
         display:'flex',
         justifyContent:'center',
-        mt:'12vh'
+        mt:'25vh'
       }}
     >
       <Box 
@@ -76,11 +82,11 @@ const Login = () => {
         <form onSubmit={handleSubmit(handleForm)}>
           <Stack alignItems='center'>
             <FormControl sx={{mt:'4vh', width:'250px'}}>
-              <InputLabel>email</InputLabel>
+              <InputLabel>username</InputLabel>
               <FilledInput 
                 type="text"
-                value={values.email}
-                onChange={handleChange('email')}
+                value={values.username}
+                onChange={handleChange('username')}
               />
             </FormControl>
 
@@ -101,11 +107,7 @@ const Login = () => {
             </FormControl>
           </Stack>
           <Link 
-            sx={{
-              color:'grey', 
-              fontSize:'13px',
-              ml:'55%'
-            }}
+            sx={{ color:'grey', fontSize:'13px', ml:'55%'}}
             href=''
           >
             forgot password?

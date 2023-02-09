@@ -55,32 +55,25 @@ func (l LoginController) Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
+	
+	check := l.Repo.GetUser(User.Username, User.Password)
 
-	ch := make(chan int)
+	if check.Username != "" {
+		res := response.Custom(
+			User,
+			http.StatusConflict,
+			"User already exist.",
+		)
+		ctx.JSON(http.StatusConflict, res)
+		return
+	}
 
-	go func(ctx *gin.Context) {
-		check := l.Repo.GetUser(User.Username, User.Password)
-		
-		if check.Username != "" {
-			res := response.Custom(
-				User,
-				http.StatusConflict,
-				"User already exist.",
-			)
-			ctx.JSON(http.StatusConflict, res)
+	if err := l.Repo.CreateUser(User); err != nil {
+		ctx.JSON(http.StatusBadRequest, response.Error(err))
+		return
+	}
 
-		} else {
-			if err := l.Repo.CreateUser(User); err != nil {
-				ctx.JSON(http.StatusBadRequest, response.Error(err))
-			} else {
-				res := response.Custom(User, http.StatusCreated, "")
+	res := response.Custom(User, http.StatusCreated, "")
 
-				ctx.JSON(http.StatusCreated, res)
-			}
-		}
-		ch <- 0
-	}(ctx)
-
-	<- ch
-
+	ctx.JSON(http.StatusCreated, res)
 }

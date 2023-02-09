@@ -11,8 +11,8 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import { Dashboard } from "@mui/icons-material";
 
-const Routing = () => (
-  <Router>
+const Routing = () => {
+  return window.sessionStorage.getItem('login') === 'false'?
     <Routes>
       <Route 
         path="/" 
@@ -30,15 +30,16 @@ const Routing = () => (
         element={<Register/>}
       />
       <Route 
-        path="/dashboard"
-        element={<Dashboard/>}
-      />
-      <Route 
         path="*" 
         element={<NotFound/>}
       />
+    </Routes>:
+    <Routes>
+      <Route 
+        path="/dashboard"
+        element={<Dashboard/>}
+      />
     </Routes>
-  </Router>
-);
+}
 
 export default Routing;

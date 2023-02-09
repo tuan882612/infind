@@ -1,5 +1,6 @@
 import '../assets/styles/home.css'
 import image1 from '../assets/images/man on computer.png'
+import logo from '../assets/images/infind-logo.png'
 import { Button, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
@@ -9,6 +10,7 @@ const Home = () => {
 
   return (
     <>
+      <img className='logo' src={logo}/>
       <Box className='midBody'>
         <Typography marginBottom='2vh' fontSize='20px'>
           Faster and better way to find opportunities.

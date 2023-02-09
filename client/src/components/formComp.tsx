@@ -1,8 +1,9 @@
 import { Button, FormControl } from "@mui/material"
-import { FunctionComponent } from "react"
+import { ChangeEvent, FunctionComponent } from "react"
 import cButton from "../types/cButton"
 
 const FormButton: FunctionComponent<cButton> = ({name, top, bottom}) => {
+
   return (
     <Button
       sx={{
