@@ -2,7 +2,7 @@ package login
 
 import (
 	"net/http"
-	
+
 	"userms/api/response"
 	"userms/api/v1/domain/user"
 
@@ -44,9 +44,9 @@ func (l LoginController) Login(ctx *gin.Context) {
 }
 
 func (l LoginController) Register(ctx *gin.Context) {
-	user := user.User{}
+	User := user.User{}
 
-	if err := ctx.ShouldBindJSON(user); err != nil {
+	if err := ctx.ShouldBindJSON(&User); err != nil {
 		res := response.Custom(
 			map[string]string{},
 			http.StatusBadRequest,
@@ -56,24 +56,31 @@ func (l LoginController) Register(ctx *gin.Context) {
 		return
 	}
 
-	check := l.Repo.GetUser(user.Username, user.Email)
+	ch := make(chan int)
 
-	if check.Username != "" {
-		res := response.Custom(
-			user,
-			http.StatusConflict,
-			"User already exist.",
-		)
-		ctx.JSON(http.StatusConflict, res)
-		return
-	}
-	
-	if err := l.Repo.CreateUser(user); err != nil {
-		ctx.JSON(http.StatusBadRequest, response.Error(err))
-		return
-	}
+	go func(ctx *gin.Context) {
+		check := l.Repo.GetUser(User.Username, User.Password)
+		
+		if check.Username != "" {
+			res := response.Custom(
+				User,
+				http.StatusConflict,
+				"User already exist.",
+			)
+			ctx.JSON(http.StatusConflict, res)
 
-	res := response.Custom(user, http.StatusCreated, "")
+		} else {
+			if err := l.Repo.CreateUser(User); err != nil {
+				ctx.JSON(http.StatusBadRequest, response.Error(err))
+			} else {
+				res := response.Custom(User, http.StatusCreated, "")
 
-	ctx.JSON(http.StatusCreated, res)
+				ctx.JSON(http.StatusCreated, res)
+			}
+		}
+		ch <- 0
+	}(ctx)
+
+	<- ch
+
 }

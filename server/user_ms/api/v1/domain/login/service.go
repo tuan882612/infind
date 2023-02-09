@@ -1,6 +1,7 @@
 package login
 
 import (
+	"userms/api/security"
 	"userms/api/v1/domain/user"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,37 +14,32 @@ type Repository struct {
 	TableName string
 }
 
-func (r *Repository) GetUser(username string, email string) user.User {
-	key := map[string]*dynamodb.AttributeValue{}
-
-	if email != "" {
-		key = map[string]*dynamodb.AttributeValue{
-			"username": {S: &username},
-			"email":    {S: &email},
-		}
-	} else {
-		key = map[string]*dynamodb.AttributeValue{
-			"username": {S: &username},
-		}
+func (r *Repository) GetUser(username string, password string) user.User {
+	key := map[string]*dynamodb.AttributeValue{
+		"username": {S: &username},
 	}
-
 	query := &dynamodb.GetItemInput{
 		TableName: aws.String(r.TableName),
 		Key:       key,
 	}
 
-	data, _ := r.Client.GetItem(query)
+	out, _ := r.Client.GetItem(query)
 
 	User := user.User{}
 
-	if err := dynamodbattribute.UnmarshalMap(data.Item, &User); err != nil {
+	if err := dynamodbattribute.UnmarshalMap(out.Item, &User); err != nil {
+		return user.User{}
+	}
+
+	if !security.ValidateHash(password, &User.Password) {
 		return user.User{}
 	}
 
 	return User
 }
 
-func (r *Repository) CreateUser(user user.User) (user.User, error) {
+func (r *Repository) CreateUser(user user.User) error {
+	user.Password, _ = security.HashPassword(user.Password)
 	User, _ := dynamodbattribute.MarshalMap(&user)
 
 	query := &dynamodb.PutItemInput{
@@ -52,5 +48,5 @@ func (r *Repository) CreateUser(user user.User) (user.User, error) {
 	}
 	_, err := r.Client.PutItem(query)
 
-	return user, err
+	return err
 }
