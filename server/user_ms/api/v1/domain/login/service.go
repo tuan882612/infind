@@ -1,7 +1,7 @@
 package login
 
 import (
-	"userms/api/security"
+	"userms/utility/security"
 	"userms/api/v1/domain/user"
 
 	"github.com/aws/aws-sdk-go/aws"

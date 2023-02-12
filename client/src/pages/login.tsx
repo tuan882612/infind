@@ -20,6 +20,25 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const styleBase = { display:'flex', justifyContent:'center', mt:'25vh' }
+
+const styleHeader = { color:'#75A9F9', fontSize:'38px', mt:'3.5vh'}
+
+const styleMain = {
+  bgcolor:'white',
+  width:'35vh',
+  height:'50vh',
+  textAlign: 'center',
+  borderRadius:'18px',
+}
+
+const styleForm = [
+  {mt:'4vh', width:'250px'},
+  {mt:'2.5vh', width:'250px'}
+]
+
+const styleForgotPsw = { color:'grey', fontSize:'13px', ml:'55%' }
+
 const Login = () => {  
   const navigate = useNavigate()
   const { handleSubmit } = useForm()
@@ -28,6 +47,7 @@ const Login = () => {
     username: '',
     password: ''
   })
+
   const [psw, setPsw] = useState<boolean>(false)
 
   const handleChange = (props: string) => 
@@ -39,12 +59,14 @@ const Login = () => {
   const changeVis = (): void => setPsw(!psw)
 
   const handleForm = async (): Promise<void> => {
+    console.log(values)
     await axios.get(
       'http://localhost:1000/api/v1/login'+
-      `?username=+${values.username}+&password=+${values.password}`
-    ).then(res => {   
+      `?username=${values.username}&password=${values.password}`
+    ).then(res => {
       if (res.data) {
         window.sessionStorage.setItem('login','true')
+        window.sessionStorage.setItem('username',values.username)
         navigate('/dashboard', { replace: true })
       } else {
         console.log('invalid')
@@ -53,35 +75,15 @@ const Login = () => {
   }
 
   return (
-    <Box
-      sx={{
-        display:'flex',
-        justifyContent:'center',
-        mt:'25vh'
-      }}
-    >
-      <Box 
-        sx={{
-          bgcolor:'white',
-          width:'35vh',
-          height:'50vh',
-          borderRadius:'18px',
-        }}
-      >
-        <Typography 
-          sx={{
-            color:'#75A9F9',
-            fontSize:'38px',
-            mt:'3.5vh',
-            textAlign:'center'
-          }}
-        >
+    <Box sx={styleBase}>
+      <Box sx={styleMain}>
+        <Typography sx={styleHeader}>
           Login
         </Typography>
         
         <form onSubmit={handleSubmit(handleForm)}>
           <Stack alignItems='center'>
-            <FormControl sx={{mt:'4vh', width:'250px'}}>
+            <FormControl sx={styleForm[0]}>
               <InputLabel>username</InputLabel>
               <FilledInput 
                 type="text"
@@ -90,7 +92,7 @@ const Login = () => {
               />
             </FormControl>
 
-            <FormControl sx={{mt:'2.5vh', width:'250px'}}>
+            <FormControl sx={styleForm[1]}>
               <InputLabel>password</InputLabel>
               <FilledInput
                 type={psw ? "text":"password"}
@@ -106,8 +108,7 @@ const Login = () => {
               />
             </FormControl>
           </Stack>
-          <Link 
-            sx={{ color:'grey', fontSize:'13px', ml:'55%'}}
+          <Link sx={styleForgotPsw}
             href=''
           >
             forgot password?

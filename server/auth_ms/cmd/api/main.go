@@ -1,20 +1,20 @@
 package main
 
 import (
+	api "auth_ms/api/server"
+	"auth_ms/utility/validators"
 	"runtime"
-	"userms/api/v1/server"
-	"userms/utility/validators"
 )
 
 func main() {
-	validators.ValidateDynamo()
-	
-	router := v1.InitService()
+	validators.ValidateRedis()
+
+	router := api.InitService()
 
 	address := "0.0.0.0"
 	if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
 		address = "localhost"
 	}
 
-	router.Run(address+":1000")
+	router.Run(address+":1003")
 }

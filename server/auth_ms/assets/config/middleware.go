@@ -5,13 +5,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func MiddleWare(router *gin.Engine) *gin.Engine {
+func Middleware(router *gin.Engine) *gin.Engine {
 	proxies := []string{
 		"192.168.1.2", 
 		"localhost",
 	}
 	origins := []string{
-		"http://localhost:3000",
+		"http://localhost:3000",	
 		"http://localhost:1000",
 		"http://localhost:1001",
 		"http://localhost:1002",
@@ -29,6 +29,6 @@ func MiddleWare(router *gin.Engine) *gin.Engine {
 	
 	router.Use(cors.New(config))
 	router.SetTrustedProxies(proxies)
-	
+
 	return router
 }
