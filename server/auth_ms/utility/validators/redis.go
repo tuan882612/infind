@@ -13,5 +13,7 @@ func ValidateRedis() {
 
 	if pong == "" || err != nil {
 		log.Fatalln("Unable to connect to redis.")
+	} else {
+		println("Connected to redis.")
 	}
 }

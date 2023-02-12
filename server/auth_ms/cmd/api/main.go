@@ -7,10 +7,10 @@ import (
 )
 
 func main() {
-	validators.ValidateRedis()
-
 	router := api.InitService()
 
+	validators.ValidateRedis()
+	
 	address := "0.0.0.0"
 	if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
 		address = "localhost"

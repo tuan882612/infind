@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	validators.ValidateDynamo()
-	
 	router := v1.InitService()
+	
+	validators.ValidateDynamo()
 
 	address := "0.0.0.0"
 	if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
