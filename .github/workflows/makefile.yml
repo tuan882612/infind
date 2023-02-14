@@ -15,13 +15,10 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: step1
-      run: apt update && apt install -y curl
+      run: apt update && apt install -y curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' | bash
       
     - name: step2
-      run: curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' | bash
-      
-    - name: step3
       run: apt-get update && apt-get install -y infisical
     
-    - name: step4
+    - name: step3
       run: infisical run -- npm run build
