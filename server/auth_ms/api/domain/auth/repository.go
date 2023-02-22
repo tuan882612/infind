@@ -1,9 +1,9 @@
 package auth
 
-import "auth_ms/assets/config"
+import "authms/assets/config"
 
 type AuthRepository interface {
-	
+	Create() []byte
 }
 
 func NewAuthRepo() AuthRepository {

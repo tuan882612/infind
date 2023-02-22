@@ -1,8 +1,8 @@
 package api
 
 import (
-	"auth_ms/api/server/routes"
-	"auth_ms/assets/config"
+	"authms/api/server/routes"
+	"authms/assets/config"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,12 +1,20 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"authms/api/domain/auth"
+
+	"github.com/gin-gonic/gin"
+)
 
 func AuthRoutes(router *gin.Engine) *gin.Engine {
-	api := router.Group("/auth")
+	handler := &auth.AuthController{
+		AuthRepo: auth.NewAuthRepo(),
+	}
+	
+	api := router.Group("/api/v1/auth")
 	{
-		api.GET("")
-		api.POST("")
+		api.GET("/verify")
+		api.POST("/create", handler.CreateToken)
 	}
 
 	return router

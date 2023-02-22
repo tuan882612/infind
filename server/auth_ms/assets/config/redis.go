@@ -1,8 +1,6 @@
 package config
 
 import (
-	// "os"
-
 	"os"
 
 	"github.com/go-redis/redis/v8"

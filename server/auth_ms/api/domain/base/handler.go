@@ -1,13 +1,13 @@
 package base
 
 import (
-	"auth_ms/api/response"
+	"authms/api/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Base(ctx *gin.Context) {
+func Default(ctx *gin.Context) {
 	body := map[string]interface{}{
 		"information": "infind auth service",
 		"version":     "0.2.0",

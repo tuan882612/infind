@@ -1,4 +1,4 @@
-module auth_ms
+module authms
 
 go 1.20
 

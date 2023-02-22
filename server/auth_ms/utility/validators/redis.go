@@ -1,7 +1,7 @@
 package validators
 
 import (
-	"auth_ms/assets/config"
+	"authms/assets/config"
 	"log"
 )
 

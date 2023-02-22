@@ -1,8 +1,8 @@
 package main
 
 import (
-	api "auth_ms/api/server"
-	"auth_ms/utility/validators"
+	"authms/api/server"
+	"authms/utility/validators"
 	"runtime"
 )
 
