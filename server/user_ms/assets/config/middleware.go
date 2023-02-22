@@ -12,9 +12,9 @@ func MiddleWare(router *gin.Engine) *gin.Engine {
 	}
 	origins := []string{
 		"http://localhost:3000",
-		"http://localhost:1000",
 		"http://localhost:1001",
 		"http://localhost:1002",
+		"http://localhost:1003",
 	}
 
 	config := cors.DefaultConfig()

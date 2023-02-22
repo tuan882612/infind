@@ -1,35 +1,14 @@
 package routes
 
 import (
-	"net/http"
-	"userms/api/response"
+	"userms/api/v1/domain/base"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Base(ctx *gin.Context) {
-	body := map[string]interface{}{
-		"information": "infind user service",
-		"version":     "0.2.0",
-	}
-	res := response.Custom(body, http.StatusOK, "")
-
-	ctx.JSON(http.StatusOK, res)
-}
-
-func None(ctx *gin.Context) {
-	res := response.Custom(
-		map[string]string{},
-		http.StatusNotFound,
-		"That endpoint does not exist",
-	)
-
-	ctx.JSON(http.StatusNotFound, res)
-}
-
 func Default(router *gin.Engine) *gin.Engine {
-	router.GET("/api/v1", Base)
-	router.NoRoute(None)
+	router.GET("/api/v1", base.Default)
+	router.NoRoute(base.None)
 
 	return router
 }

@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"userms/api/v1/server"
 
-	// "userms/api/v1/model"
-
 	"net/http"
 	"net/http/httptest"
 	"testing"
