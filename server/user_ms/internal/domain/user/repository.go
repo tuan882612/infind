@@ -1,7 +1,7 @@
 package user
 
 import (
-	"userms/pkg/config"
+	"user_ms/pkg/config"
 )
 
 type UserRepository interface {

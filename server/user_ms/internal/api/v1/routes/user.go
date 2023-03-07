@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"userms/internal/domain/user"
-	h "userms/internal/api/v1/handlers"
+	"user_ms/internal/domain/user"
+	h "user_ms/internal/api/v1/handlers"
 
 	"github.com/gin-gonic/gin"
 )

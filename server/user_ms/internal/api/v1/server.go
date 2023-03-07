@@ -2,9 +2,9 @@ package v1
 
 import (
 	"strconv"
-	"userms/internal/api/v1/handlers"
-	"userms/internal/api/v1/routes"
-	"userms/internal/security"
+	"user_ms/internal/api/v1/handlers"
+	"user_ms/internal/api/v1/routes"
+	"user_ms/internal/security"
 
 	"github.com/gin-gonic/gin"
 )

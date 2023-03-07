@@ -1,6 +1,6 @@
 package user
 
-import "userms/internal/domain/search"
+import "user_ms/internal/domain/search"
 
 type User struct {
 	Username string          `dynamodbav:"username" json:"username"`

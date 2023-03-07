@@ -2,12 +2,11 @@ package test
 
 import (
 	"encoding/json"
-	"userms/pkg/response"
-	"userms/test/utility"
-
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"user_ms/pkg/response"
+	"user_ms/test/utility"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"userms/pkg/response"
-	l "userms/internal/domain/login"
-	u "userms/internal/domain/user"
+	"user_ms/pkg/response"
+	l "user_ms/internal/domain/login"
+	u "user_ms/internal/domain/user"
 
 	"github.com/gin-gonic/gin"
 )

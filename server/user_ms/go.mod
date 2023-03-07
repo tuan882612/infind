@@ -1,4 +1,4 @@
-module userms
+module user_ms
 
 go 1.20
 

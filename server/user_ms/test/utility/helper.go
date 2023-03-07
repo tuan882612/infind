@@ -1,8 +1,8 @@
 package test
 
 import (
-	"userms/internal/api/v1"
-	"userms/pkg/config"
+	"user_ms/internal/api/v1"
+	"user_ms/pkg/config"
 
 	"github.com/gin-gonic/gin"
 )

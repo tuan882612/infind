@@ -2,7 +2,7 @@ package validators
 
 import (
 	"log"
-	"userms/pkg/config"
+	"user_ms/pkg/config"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )

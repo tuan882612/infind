@@ -1,8 +1,8 @@
 package login
 
 import (
-	"userms/internal/security"
-	"userms/internal/domain/user"
+	"user_ms/internal/security"
+	"user_ms/internal/domain/user"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"

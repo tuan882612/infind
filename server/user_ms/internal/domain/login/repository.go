@@ -1,8 +1,8 @@
 package login
 
 import (
-	"userms/internal/domain/user"
-	"userms/pkg/config"
+	"user_ms/internal/domain/user"
+	"user_ms/pkg/config"
 )
 
 type LoginRepository interface {

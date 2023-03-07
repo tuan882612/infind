@@ -2,9 +2,9 @@ package test
 
 import (
 	"testing"
-	"userms/pkg/config"
-	"userms/pkg/validators"
-	"userms/test/utility"
+	"user_ms/pkg/config"
+	"user_ms/pkg/validators"
+	"user_ms/test/utility"
 
 	"github.com/stretchr/testify/assert"
 )

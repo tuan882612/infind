@@ -3,12 +3,12 @@ package test
 import (
 	"bytes"
 	"encoding/json"
-	"userms/test/utility"
-
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
+	
+	"user_ms/test/utility"
+	
 	"github.com/stretchr/testify/assert"
 )
 

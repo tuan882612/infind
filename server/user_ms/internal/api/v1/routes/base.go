@@ -1,7 +1,7 @@
 package routes
 
 import (
-	h "userms/internal/api/v1/handlers"
+	h "user_ms/internal/api/v1/handlers"
 
 	"github.com/gin-gonic/gin"
 )

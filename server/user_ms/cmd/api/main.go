@@ -1,9 +1,9 @@
 package main
 
 import (
-	"userms/internal/api/v1"
-	"userms/pkg/validators"
-	"userms/pkg/config"
+	"user_ms/internal/api/v1"
+	"user_ms/pkg/validators"
+	"user_ms/pkg/config"
 
 	"github.com/gin-gonic/gin"
 )
