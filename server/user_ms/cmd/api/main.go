@@ -1,20 +1,21 @@
 package main
 
 import (
-	"runtime"
-	"userms/api/v1/server"
-	"userms/utility/validators"
+	"userms/internal/api/v1"
+	"userms/pkg/validators"
+	"userms/pkg/config"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	router := v1.InitService()
-	
+	gin.SetMode(gin.DebugMode)
+
+	config.SetEnvVariables(".env")
+	validators.ValidateLoadEnv()
 	validators.ValidateDynamo()
 
-	address := "0.0.0.0"
-	if runtime.GOOS == "windows" || runtime.GOOS == "linux" {
-		address = "localhost"
-	}
-
-	router.Run(address+":1000")
+	server := v1.InitService("localhost",2000)
+	server.LoadConfig()
+	server.Run()
 }
