@@ -3,7 +3,7 @@ package test
 import (
 	"bytes"
 	"encoding/json"
-	"userms/api/v1/server"
+	"userms/test/utility"
 
 	"net/http"
 	"net/http/httptest"
@@ -16,26 +16,26 @@ func Test_Get_Existing_User(t *testing.T) {
 	query := "?username=tuan882612"
 	req, _ := http.NewRequest(
 		http.MethodGet, 
-		BaseUrl+"/user/find"+query, 
+		test.BaseUrl+"/user/find"+query, 
 		nil,
 	)
-	res := httptest.NewRecorder()
-	v1.InitService().ServeHTTP(res, req)
+	writer := httptest.NewRecorder()
+	test.GetServer().ServeHTTP(writer, req)
 
-	assert.Equal(t, http.StatusOK, res.Code)
+	assert.Equal(t, http.StatusOK, writer.Code)
 }
 
 func Test_Get_NonExistent_User(t *testing.T) {
 	query := "?username=tu"
 	req, _ := http.NewRequest(
 		http.MethodGet, 
-		BaseUrl+"/user/find"+query, 
+		test.BaseUrl+"/user/find"+query, 
 		nil,
 	)
-	res := httptest.NewRecorder()
-	v1.InitService().ServeHTTP(res, req)
+	writer := httptest.NewRecorder()
+	test.GetServer().ServeHTTP(writer, req)
 
-	assert.Equal(t, http.StatusNotFound, res.Code)
+	assert.Equal(t, http.StatusNotFound, writer.Code)
 }
 
 func Test_Update_Invalid_User(t *testing.T) {
@@ -46,12 +46,12 @@ func Test_Update_Invalid_User(t *testing.T) {
 
 	req, _  := http.NewRequest(
 		http.MethodPut,
-		BaseUrl+"/user/update",
+		test.BaseUrl+"/user/update",
 		bytes.NewBuffer(body),
 	)
 
-	res := httptest.NewRecorder()
-	v1.InitService().ServeHTTP(res, req)
+	writer := httptest.NewRecorder()
+	test.GetServer().ServeHTTP(writer, req)
 
-	assert.Equal(t, http.StatusBadRequest, res.Code)
+	assert.Equal(t, http.StatusBadRequest, writer.Code)
 }
