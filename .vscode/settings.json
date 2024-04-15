@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "driver": "PostgreSQL",
+            "name": "infind user",
+            "connectString": "postgres://postgres:root@localhost:5432/infind"
+        }
+    ]
+}
